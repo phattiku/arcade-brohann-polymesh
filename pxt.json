@@ -1,5 +1,6 @@
 {
     "name": "arcade-brohann-3d",
+    "version": "0.1.0",
     "description": "",
     "dependencies": {
         "device": "*"
