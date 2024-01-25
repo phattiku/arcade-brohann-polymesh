@@ -301,5 +301,12 @@ namespace brohann3D {
     export function anglez() {
         return azchange
     }
+
+    //% block="set camera position to x: $x y: $y z: $z"
+    export function setcampos (x: number, y: number, z: number) {
+        camx = x
+        camy = y
+        camz = z
+    }
 }
 
