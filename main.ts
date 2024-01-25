@@ -37,10 +37,10 @@ namespace brohann3D {
 
 
     ];
-    //% block="render"
-    export function render() {
+    //% block="render to $image"
+    export function render(image: Image) {
         function updateCube() {
-            let bg = scene.backgroundImage();
+            let bg = image;
             let bgsave = bg.clone()
             let angleX = 0;
             angleX += axchange
