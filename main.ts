@@ -248,7 +248,7 @@ namespace brohann3D {
         ct.push(formattedData2)
     }
 
-    //% block="change angle $choice by $x"
+    //% block="change $choice by $x"
     export function change(choice: Angles, x: number) {
         if (choice === 0) {
             axchange += x
@@ -257,6 +257,17 @@ namespace brohann3D {
             aychange += x
         } else if (choice === 2) {
             azchange += x
+        }
+    }
+    //% block="set $choice to $x"
+    export function setangle(choice: Angles, x: number) {
+        if (choice === 0) {
+            axchange = x
+
+        } else if (choice === 1) {
+            aychange = x
+        } else if (choice === 2) {
+            azchange = x
         }
     }
 
