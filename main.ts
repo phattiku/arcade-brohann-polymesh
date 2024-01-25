@@ -14,6 +14,8 @@ enum SortingMethods {
     Accurate,
     //% block="fast"
     Fast,
+    //% block="fast and accurate"
+    Fast_and_Accurate,
 }
 //% color="#279139"
 //% icon="\uf1b2"
@@ -151,18 +153,57 @@ namespace brohann3D {
                 return (rotatedVertices[indices[0]].z + rotatedVertices[indices[1]].z + rotatedVertices[indices[2]].z) / 3;
             }
 
+            function quicksort2(triangles: any[], low: number, high: number, rotatedVertices: any[]) {
+                if (low < high) {
+                    let pi = partition2(triangles, low, high, rotatedVertices);
 
+                    quicksort(triangles, low, pi - 1, rotatedVertices);
+                    quicksort(triangles, pi + 1, high, rotatedVertices);
+                }
+            }
+
+            // Partition function for quicksort
+            function partition2(triangles: any[], low: number, high: number, rotatedVertices: any[]) {
+                let pivot = calculateAverageZ2(triangles[high], rotatedVertices);
+                let i = low - 1;
+
+                for (let j = low; j < high; j++) {
+                    if (calculateAverageZ2(triangles[j], rotatedVertices) > pivot) {
+                        i++;
+
+                        // Swap triangles[i] and triangles[j]
+                        let temp = triangles[i];
+                        triangles[i] = triangles[j];
+                        triangles[j] = temp;
+                    }
+                }
+
+                // Swap triangles[i + 1] and triangles[high]
+                let temp = triangles[i + 1];
+                triangles[i + 1] = triangles[high];
+                triangles[high] = temp;
+
+                return i + 1;
+            }
+
+            function calculateAverageZ2(triangle: { indices: number[] }, rotatedVertices: { z: number }[]) {
+                let z = (rotatedVertices[triangle.indices[0]].z + rotatedVertices[triangle.indices[1]].z + rotatedVertices[triangle.indices[2]].z) / 3;
+                return z;
+            }
 
 
 
             if (sort === 0) {
                 quicksort(triangles, 0, triangles.length - 1, rotatedVertices);
-            } else {
+            } else if (sort === 1){
                 triangles.sort((b, a) => {
                     let zA = (rotatedVertices[a.indices[0]].z + rotatedVertices[a.indices[1]].z + rotatedVertices[a.indices[2]].z) / 3;
                     let zB = (rotatedVertices[b.indices[0]].z + rotatedVertices[b.indices[1]].z + rotatedVertices[b.indices[2]].z) / 3;
                     return zA - zB;
                 });
+            }else {
+                quicksort2(triangles, 0, triangles.length - 1, rotatedVertices);
+
             }
 
 
@@ -222,8 +263,10 @@ namespace brohann3D {
     export function sortingmethod(method: SortingMethods) {
         if (method === 0) {
             sort = 1
+        } else if (method === 1) {
+            sort = 1
         } else {
-            sort = 0
+            sort = 2
         }
     }
 }
