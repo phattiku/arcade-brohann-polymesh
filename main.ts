@@ -22,7 +22,7 @@ enum SortingMethods {
 namespace brohann3D {
     let axchange = 0
     let azchange = 0
-
+    let sizechange = 0
     let aychange = 0
 
     let sort = 2
@@ -48,6 +48,7 @@ namespace brohann3D {
             let centerX = scene.screenWidth() / 2;
             let centerY = scene.screenHeight() / 2;
             let size = 1
+            size += sizechange
             let camx = 0
             let camy = 0
             let camz = 0
@@ -269,6 +270,10 @@ namespace brohann3D {
         } else if (choice === 2) {
             azchange = x
         }
+    }
+    //% block="set size to $x"
+    export function setsize (x: number) {
+        sizechange = x
     }
 
     //% block="set sorting method to $method"
