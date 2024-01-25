@@ -264,7 +264,7 @@ namespace brohann3D {
         if (method === 0) {
             sort = 1
         } else if (method === 1) {
-            sort = 1
+            sort = 0
         } else {
             sort = 2
         }
