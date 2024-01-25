@@ -25,7 +25,7 @@ namespace brohann3D {
 
     let aychange = 0
 
-    let sort = 0
+    let sort = 2
     let ct = [
         { indices: [0, 0, 0], color: 13 }
     ];
