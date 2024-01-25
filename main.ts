@@ -114,7 +114,7 @@ namespace brohann3D {
                 // screen coordinates
                 let screenX = centerX + projectedX;
                 let screenY = centerY + projectedY;
-                if (rotatedZ2 > 0) {
+                if (rotatedZ2 > -100) {
                 return { x: screenX, y: screenY, z: rotatedZ2 };
                 } else {
                     return { x: 0, y: 0, z: 0 };
