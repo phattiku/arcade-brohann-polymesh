@@ -38,7 +38,7 @@ namespace brohann3D {
 
     ];
     //% block="render to $image"
-    //% image.defl="screen_image_picker"
+    //% image.shadow=screen_image_picker
     export function render(image: Image) {
         function updateCube() {
             let bg = image;
