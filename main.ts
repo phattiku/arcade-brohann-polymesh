@@ -9,6 +9,14 @@ enum Angles {
     //% block="angle z"
     Angle_Z,
 }
+enum Cameras {
+    //% block="cam x"
+    Cam_x,
+    //% block="cam y"
+    Cam_y,
+    //% block="cam z"
+    Cam_z,
+}
 enum SortingMethods {
     //% block="accurate"
     Accurate,
@@ -261,6 +269,17 @@ namespace brohann3D {
             aychange += x
         } else if (choice === 2) {
             azchange += x
+        }
+    }
+    //% block="change $choice by $x"
+    export function changecam(choice: Cameras, x: number) {
+        if (choice === 0) {
+            camx += x
+
+        } else if (choice === 1) {
+            camy += x
+        } else if (choice === 2) {
+            camz += x
         }
     }
     //% block="set $choice to $x"
