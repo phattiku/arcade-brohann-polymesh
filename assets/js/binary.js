@@ -1,4 +1,4 @@
-// meta={"simUrl":"https://trg-arcade.userpxt.io/v1.12.46/---simulator","cdnUrl":"https://pxt.azureedge.net","version":"0.2.0","target":"arcade","targetVersion":"1.12.46","repo":"brohann3214/arcade-brohann-3d"}
+// meta={"simUrl":"https://trg-arcade.userpxt.io/v1.12.46/---simulator","cdnUrl":"https://pxt.azureedge.net","version":"0.3.0","target":"arcade","targetVersion":"1.12.46","repo":"brohann3214/arcade-brohann-3d"}
 // total=1256550 new=5.90% cached=88.43% other=5.66%
 (function (ectx) {
 'use strict';
@@ -429,7 +429,7 @@ const pxsim_pxtrt = pxsim.pxtrt;
 const pxsim_numops = pxsim.numops;
 
 
-function _main___P250067(s) {
+function _main___P267567(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -839,7 +839,7 @@ switch (step) {
     r0 = pxsim_Array__mk();
     s.tmp_2 = r0;
     r0 = pxsim_Array__push(s.tmp_2, s.tmp_1);
-    globals.ct___249168 = (s.tmp_2);
+    globals.ct___266480 = (s.tmp_2);
     r0 = pxsim_pxtrt.mkMap();
     s.tmp_0 = r0;
     r0 = pxsim_pxtrt.mapSetByString(s.tmp_0, "x", 0);
@@ -848,18 +848,18 @@ switch (step) {
     r0 = pxsim_Array__mk();
     s.tmp_1 = r0;
     r0 = pxsim_Array__push(s.tmp_1, s.tmp_0);
-    globals.cv___249172 = (s.tmp_1);
+    globals.cv___266484 = (s.tmp_1);
     r0 = undefined;
     return leave(s, r0)
   default: oops()
 } } }
-_main___P250067.info = {"start":0,"length":0,"line":0,"column":0,"endLine":0,"endColumn":0,"fileName":"main.ts","functionName":"<main>","argumentNames":[]}
-_main___P250067.continuations = [  ]
+_main___P267567.info = {"start":0,"length":0,"line":0,"column":0,"endLine":0,"endColumn":0,"fileName":"main.ts","functionName":"<main>","argumentNames":[]}
+_main___P267567.continuations = [  ]
 
-function _main___P250067_mk(s) {
+function _main___P267567_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: _main___P250067, depth: s.depth + 1,
+        parent: s, fn: _main___P267567, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
@@ -42348,7 +42348,7 @@ const sprites_BaseSpriteSayRenderer__C216591_VT = mkVTable({
   },
 });
 
-const breakpoints = setupDebugger(1, ["ct___249168","cv___249172"])
+const breakpoints = setupDebugger(1, ["ct___266480","cv___266484"])
 
-return _main___P250067
+return _main___P267567
 })
