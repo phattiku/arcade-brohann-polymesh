@@ -202,7 +202,7 @@ namespace brohann3D {
             } else if (sort === 1){
                 quicksort(triangles, 0, triangles.length - 1, rotatedVertices);
 
-            }else {
+            }else  if (sort === 2){
                 quicksort2(triangles, 0, triangles.length - 1, rotatedVertices);
 
             }
