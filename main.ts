@@ -70,7 +70,10 @@ namespace brohann3D {
             cv = [
                 { x: 0, y: 0, z: 0 },
             ];
-
+            let zerosArray: number[] = [];
+            for (let i = 0; i < vertices.length; i++) {
+                zerosArray.push(0);
+            }
             let cosX = Math.cos(angleX);
             let sinX = Math.sin(angleX);
             let cosY = Math.cos(angleY);
@@ -114,10 +117,11 @@ namespace brohann3D {
                 // screen coordinates
                 let screenX = centerX + projectedX;
                 let screenY = centerY + projectedY;
-                if (rotatedZ2 > -100) {
                 return { x: screenX, y: screenY, z: rotatedZ2 };
+                if (rotatedZ2 > -100) {
+
                 } else {
-                    return { x: 0, y: 0, z: 0 };
+                    zerosArray[index] = 1
                 }
             });
 
@@ -228,9 +232,15 @@ namespace brohann3D {
                 let triangle = triangles[i];
                 let indices = triangle.indices;
                 let color = triangle.color;
+                if (!(zerosArray[indices[0]] === 1)) {
+                    if (!(zerosArray[indices[1]] === 1)) {
+                        if (!(zerosArray[indices[2]] === 1)) {
+                            helpers.imageFillTriangle(bg, rotatedVertices[indices[0]].x, rotatedVertices[indices[0]].y, rotatedVertices[indices[1]].x, rotatedVertices[indices[1]].y, rotatedVertices[indices[2]].x, rotatedVertices[indices[2]].y, color)
 
+                        }
+                    }
+                }
                 //scene.backgroundImage().fillTriangle(rotatedVertices[indices[0]].x, rotatedVertices[indices[0]].y, rotatedVertices[indices[1]].x, rotatedVertices[indices[1]].y, rotatedVertices[indices[2]].x, rotatedVertices[indices[2]].y, color);
-                helpers.imageFillTriangle(bg, rotatedVertices[indices[0]].x, rotatedVertices[indices[0]].y, rotatedVertices[indices[1]].x, rotatedVertices[indices[1]].y, rotatedVertices[indices[2]].x, rotatedVertices[indices[2]].y, color)
 
             }
             rotatedVertices.length = 0;
