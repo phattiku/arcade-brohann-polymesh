@@ -157,8 +157,8 @@ namespace brohann3D {
                 if (low < high) {
                     let pi = partition2(triangles, low, high, rotatedVertices);
 
-                    quicksort(triangles, low, pi - 1, rotatedVertices);
-                    quicksort(triangles, pi + 1, high, rotatedVertices);
+                    quicksort2(triangles, low, pi - 1, rotatedVertices);
+                    quicksort2(triangles, pi + 1, high, rotatedVertices);
                 }
             }
 
