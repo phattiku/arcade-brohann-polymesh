@@ -72,11 +72,12 @@ namespace brohann3D {
                 let x = vertex.x;
                 let y = vertex.y;
                 let z = vertex.z;
-                if (!(index > 5 && index < 9)) {
                     x -= camx
                     y -= camy
                     z -= camz
-                }
+                    x *= size
+                    y *= size
+                    z *= size
                 // rotate y
                 let cosY = Math.cos(angleY);
                 let sinY = Math.sin(angleY);
