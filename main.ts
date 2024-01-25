@@ -22,6 +22,9 @@ enum SortingMethods {
 namespace brohann3D {
     let axchange = 0
     let azchange = 0
+    let camx = 0
+    let camy = 0
+    let camz = 0
     let sizechange = 0
     let aychange = 0
 
@@ -49,9 +52,7 @@ namespace brohann3D {
             let centerY = scene.screenHeight() / 2;
             let size = 1
             size += sizechange
-            let camx = 0
-            let camy = 0
-            let camz = 0
+            
             let vertices = cv;
             let triangles = ct;
             ct = [
@@ -286,6 +287,19 @@ namespace brohann3D {
         } else {
             sort = 2
         }
+    }
+
+    //% block="angle x"
+    export function anglex() {
+        return  axchange
+    }
+    //% block="angle y"
+    export function angley() {
+        return aychange
+    }
+    //% block="angle z"
+    export function anglez() {
+        return azchange
     }
 }
 
