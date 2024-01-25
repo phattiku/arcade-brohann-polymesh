@@ -194,13 +194,14 @@ namespace brohann3D {
 
 
             if (sort === 0) {
-                quicksort(triangles, 0, triangles.length - 1, rotatedVertices);
-            } else if (sort === 1){
                 triangles.sort((b, a) => {
                     let zA = (rotatedVertices[a.indices[0]].z + rotatedVertices[a.indices[1]].z + rotatedVertices[a.indices[2]].z) / 3;
                     let zB = (rotatedVertices[b.indices[0]].z + rotatedVertices[b.indices[1]].z + rotatedVertices[b.indices[2]].z) / 3;
                     return zA - zB;
                 });
+            } else if (sort === 1){
+                quicksort(triangles, 0, triangles.length - 1, rotatedVertices);
+
             }else {
                 quicksort2(triangles, 0, triangles.length - 1, rotatedVertices);
 
@@ -262,9 +263,9 @@ namespace brohann3D {
     //% block="set sorting method to $method"
     export function sortingmethod(method: SortingMethods) {
         if (method === 0) {
-            sort = 1
-        } else if (method === 1) {
             sort = 0
+        } else if (method === 1) {
+            sort = 1
         } else {
             sort = 2
         }
