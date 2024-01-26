@@ -118,7 +118,7 @@ namespace brohann3D {
                 let screenX = centerX + projectedX;
                 let screenY = centerY + projectedY;
                 return { x: screenX, y: screenY, z: rotatedZ2 };
-                if (rotatedZ2 > -100) {
+                if (rotatedZ2 > 0) {
 
                 } else {
                     zerosArray[index] = 1
