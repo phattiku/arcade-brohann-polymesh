@@ -61,7 +61,7 @@ namespace brohann3D {
             let centerY = scene.screenHeight() / 2;
             let size = 1
             size += sizechange
-            
+
             let vertices = cv;
             let triangles = ct;
             ct = [
@@ -85,12 +85,11 @@ namespace brohann3D {
                 let x = vertex.x;
                 let y = vertex.y;
                 let z = vertex.z;
+                if (!(index > 5 && index < 9)) {
                     x -= camx
                     y -= camy
                     z -= camz
-                    x *= size
-                    y *= size
-                    z *= size
+                }
                 // rotate y
                 let cosY = Math.cos(angleY);
                 let sinY = Math.sin(angleY);
@@ -117,12 +116,13 @@ namespace brohann3D {
                 // screen coordinates
                 let screenX = centerX + projectedX;
                 let screenY = centerY + projectedY;
-                return { x: screenX, y: screenY, z: rotatedZ2 };
-                if (rotatedZ2 > 0) {
+
+                if (rotatedZ2 > -100) {
 
                 } else {
                     zerosArray[index] = 1
                 }
+                return { x: screenX, y: screenY, z: rotatedZ2 };
             });
 
             function quicksort(arr: any[], low: number, high: number, rotatedVertices: any[]) {
@@ -173,36 +173,40 @@ namespace brohann3D {
             }
 
             function quicksort2(triangles: any[], low: number, high: number, rotatedVertices: any[]) {
-                if (low < high) {
+                while (low < high) {
                     let pi = partition2(triangles, low, high, rotatedVertices);
 
-                    quicksort2(triangles, low, pi - 1, rotatedVertices);
-                    quicksort2(triangles, pi + 1, high, rotatedVertices);
+                    // Optimize the recursion by tail call optimization
+                    if (pi - low < high - pi) {
+                        quicksort2(triangles, low, pi - 1, rotatedVertices);
+                        low = pi + 1;
+                    } else {
+                        quicksort2(triangles, pi + 1, high, rotatedVertices);
+                        high = pi - 1;
+                    }
                 }
             }
 
-            // Partition function for quicksort
             function partition2(triangles: any[], low: number, high: number, rotatedVertices: any[]) {
                 let pivot = calculateAverageZ2(triangles[high], rotatedVertices);
-                let i = low - 1;
+                let i = low;
 
                 for (let j = low; j < high; j++) {
                     if (calculateAverageZ2(triangles[j], rotatedVertices) > pivot) {
-                        i++;
-
                         // Swap triangles[i] and triangles[j]
                         let temp = triangles[i];
                         triangles[i] = triangles[j];
                         triangles[j] = temp;
+                        i++;
                     }
                 }
 
-                // Swap triangles[i + 1] and triangles[high]
-                let temp = triangles[i + 1];
-                triangles[i + 1] = triangles[high];
+                // Swap triangles[i] and triangles[high]
+                let temp = triangles[i];
+                triangles[i] = triangles[high];
                 triangles[high] = temp;
 
-                return i + 1;
+                return i;
             }
 
             function calculateAverageZ2(triangle: { indices: number[] }, rotatedVertices: { z: number }[]) {
@@ -212,16 +216,17 @@ namespace brohann3D {
 
 
 
+
             if (sort === 0) {
                 triangles.sort((b, a) => {
                     let zA = (rotatedVertices[a.indices[0]].z + rotatedVertices[a.indices[1]].z + rotatedVertices[a.indices[2]].z) / 3;
                     let zB = (rotatedVertices[b.indices[0]].z + rotatedVertices[b.indices[1]].z + rotatedVertices[b.indices[2]].z) / 3;
                     return zA - zB;
                 });
-            } else if (sort === 1){
+            } else if (sort === 1) {
                 quicksort(triangles, 0, triangles.length - 1, rotatedVertices);
 
-            }else  if (sort === 2){
+            } else if (sort === 2) {
                 quicksort2(triangles, 0, triangles.length - 1, rotatedVertices);
 
             }
@@ -241,14 +246,16 @@ namespace brohann3D {
                     }
                 }
                 //scene.backgroundImage().fillTriangle(rotatedVertices[indices[0]].x, rotatedVertices[indices[0]].y, rotatedVertices[indices[1]].x, rotatedVertices[indices[1]].y, rotatedVertices[indices[2]].x, rotatedVertices[indices[2]].y, color);
-
             }
             rotatedVertices.length = 0;
             triangles.length = 0;
 
+            console.log(zerosArray)
 
         }
         updateCube()
+
+
     }
 
     //% block="add vertice x $x y $y z $z" 
@@ -307,7 +314,7 @@ namespace brohann3D {
         }
     }
     //% block="set size to $x"
-    export function setsize (x: number) {
+    export function setsize(x: number) {
         sizechange = x
     }
 
@@ -324,7 +331,7 @@ namespace brohann3D {
 
     //% block="angle x"
     export function anglex() {
-        return  axchange
+        return axchange
     }
     //% block="angle y"
     export function angley() {
@@ -336,10 +343,11 @@ namespace brohann3D {
     }
 
     //% block="set camera position to x: $x y: $y z: $z"
-    export function setcampos (x: number, y: number, z: number) {
+    export function setcampos(x: number, y: number, z: number) {
         camx = x
         camy = y
         camz = z
     }
+
 }
 
