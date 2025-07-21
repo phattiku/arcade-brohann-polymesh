@@ -50,6 +50,14 @@ namespace Polymesh {
         //% block="fast"
         Fast = 1,
     }
+    export enum MeshFlags {
+        //% block="Invisible"
+        Invisible = 0,
+        //% block="Non culling"
+        Noncull = 1,
+        //% block="Back face"
+        Backface = 2,
+    }
 
     //% blockid=poly_sorttype
     //% block="set sorting method to $method"
@@ -72,6 +80,7 @@ namespace Polymesh {
         pivot: { x: number, y: number, z: number}
         rot: { x: number, y: number, z: number }
         pos: { x: number, y: number, z: number, vx: number, vy: number, vz: number}
+        flag: { invisible: boolean, noncull: boolean, backface: boolean}
         __home__() {
             forever(() => {
                 const delta = game.currentScene().eventContext.deltaTimeMillis
@@ -87,8 +96,36 @@ namespace Polymesh {
             this.pivot = { x: 0, y: 0, z: 0 }
             this.rot = { x: 0, y: 0, z: 0 }
             this.pos = { x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0 }
-            
+            this.flag = { invisible: false, noncull: false, backface: false }
+
             this.__home__()
+        }
+
+        //% blockid=poly_flag_set
+        //% block=" $this set flag of $flag right? $ok=toggleYesNo"
+        //% this.shadow=variables_get this.defl=myMesh
+        //% group="Flag mesh"
+        //% weight=10
+        public setFlag(flag: MeshFlags, ok: boolean) {
+            switch (flag) {
+                case 0: default: this.flag.invisible = ok; break
+                case 1: this.flag.noncull = ok; break
+                case 2: this.flag.backface = ok; break
+            }
+        }
+
+        //% blockid=poly_flag_get
+        //% block=" $this get flag of $flag"
+        //% this.shadow=variables_get this.defl=myMesh
+        //% group="Flag mesh"
+        //% weight=5
+        public getFlag(flag: MeshFlags) {
+            switch (flag) {
+                case 0: default: return this.flag.invisible;
+                case 1: return this.flag.noncull;
+                case 2: return this.flag.backface;
+            }
+            return false
         }
 
         //% blockid=poly_addvertice
@@ -350,27 +387,28 @@ namespace Polymesh {
     }
 
     //% blockid=poly_rendermesh_all
-    //% block=" $plms render all meshes to $image=screen_image_picker|| as inner? $inner=toggleYesNo and no culling? $nocull=toggleYesNo and line render color? $linecolor=colorindexpicker"
+    //% block=" $plms render all meshes to $image=screen_image_picker|| as line render color? $linecolor=colorindexpicker"
     //% plms.shadow=variables_get plms.defl=myMeshes
     //% group="render"
     //% weight=9
-    export function renderAll(plms: mesh[], image: Image, inner?: boolean, nocull?: boolean, linecolor?: number) {
-        if (plms.length <= 0) return;
+    export function renderAll(plms: mesh[], image: Image, linecolor?: number) {
+        if (!plms || !image || plms.length <= 0) return;
 
         const depths = plms.map(plm => meshDepthZ(plm));
         const sorted = plms.map((m, i) => ({ mesh: m, depth: depths[i] }));
         sorted.sort((a, b) => b.depth - a.depth);
-        for (const m of sorted) render(m.mesh, image, inner, nocull, linecolor);
+        for (const m of sorted) if (!m.mesh.flag.invisible) render(m.mesh, image, linecolor);
     }
 
     //% blockid=poly_rendermesh
-    //% block=" $plm render to $image=screen_image_picker|| as inner? $inner=toggleYesNo and no culling? $nocull=toggleYesNo and line render color? $linecolor=colorindexpicker"
+    //% block=" $plm render to $image=screen_image_picker|| as line render color? $linecolor=colorindexpicker"
     //% plm.shadow=variables_get plm.defl=myMesh
     //% group="render"
     //% weight=10
-    export function render(plm: mesh, image: Image, inner?: boolean, nocull?: boolean, linecolor?: number) {
-        if (plm.points.length <= 0 || plm.faces.length <= 0) return;
-        
+    export function render(plm: mesh, image: Image, linecolor?: number) {
+        if (!plm || !image || plm.points.length <= 0 || plm.faces.length <= 0) return;
+        if (plm.flag.invisible) return;
+
         const centerX = image.width >> 1;
         const centerY = image.height >> 1;
 
@@ -421,10 +459,10 @@ namespace Polymesh {
         for (const t of tris) {
             const inds = t.indices;
             if (inds.some(i => rotated[i].z < -Math.abs(dist))) continue;
-            if (inds.every(i => (rotated[i].x < 0 || rotated[i].x >= image.width) || (rotated[i].y < 0 || rotated[i].y >= image.height))) continue;
+            if (inds.every(i => (isOutOfArea(rotated[i].x, rotated[i].y, image.width, image.height)))) continue;
             
             // Backface culling
-            if (!nocull) if (!rotated.some((ro) => (inds.every(i => inner ? rotated[i].z > ro.z : rotated[i].z < ro.z)))) continue;
+            if (!plm.flag.noncull) if (isFaceVisible(rotated, inds, plm.flag.backface)) continue;
 
             // Draw line canvas when have line color index
             if (linecolor && linecolor > 0) {
@@ -475,6 +513,31 @@ namespace Polymesh {
 
         }
         
+    }
+
+    function isOutOfArea(x: number, y: number, width: number, height: number) {
+        return isOutOfRange(x, width) || isOutOfRange(y, height)
+    }
+
+    function isOutOfRange(x: number, range: number) {
+        return x < 0 || x >= range
+    }
+
+    function isFaceVisible(rotated: { z: number }[], indices: number[], inner?: boolean): boolean {
+        // Simple normal calculation for culling
+        if (indices.length > 0) {
+            const zs = indices.map(ind => rotated[ind].z)
+
+            // Average depth comparison
+            const avgZ = zs.reduce((sum, z) => sum + z, 0) / zs.length;
+            const otherZs = rotated.filter((_, i) => indices.indexOf(i) < 0).map(p => p.z);
+
+            if (otherZs.length > 0) {
+                const otherAvg = otherZs.reduce((sum, z) => sum + z, 0) / otherZs.length;
+                return inner ? avgZ < otherAvg : avgZ > otherAvg;
+            }
+        }
+        return true;
     }
 
     function meshDepthZ(plm: mesh): number {
@@ -588,10 +651,10 @@ namespace Polymesh {
         for (let y = 0; y < src.height; y++) {
             for (let x = 0; x < src.width; x++) {
                 const col = src.getPixel(src.width - x, src.height - y);
-                if (!col || (col && col <= 0)) continue;
+                if (!col || col <= 0) continue;
                 const sx = (s: number, m?: boolean) => Math.trunc((1 - ((y * s) + (m ? s : 0) - (s / 2)) / (src.height * s)) * (X1 + ((x * s) + (m ? s : 0) - (s / 2)) / (src.width * s) * (X2 - X1)) + ((y * s) + (m ? s : 0) - (s / 2)) / (src.height * s) * (X3 + ((x * s) + (m ? s : 0) - (s / 2)) / (src.width * s) * (X4 - X3)))
                 const sy = (s: number, m?: boolean) => Math.trunc((1 - ((x * s) + (m ? s : 0) - (s / 2)) / (src.width * s)) * (Y1 + ((y * s) + (m ? s : 0) - (s / 2)) / (src.height * s) * (Y3 - Y1)) + ((x * s) + (m ? s : 0) - (s / 2)) / (src.width * s) * (Y2 + ((y * s) + (m ? s : 0) - (s / 2)) / (src.height * s) * (Y4 - Y2)))
-                if ((sx(zoom, true) < 0 || sx(zoom) >= dest.width) || (sy(zoom, true) < 0 || sy(zoom) >= dest.height)) continue;
+                if (isOutOfArea(sx(zoom), sy(zoom), dest.width, dest.height) || isOutOfArea(sx(zoom, true), sy(zoom, true), dest.width, dest.height)) continue;
                 helpers.imageFillTriangle(dest, sx(zoom, true), sy(zoom), sx(zoom), sy(zoom), sx(zoom, true), sy(zoom, true), col)
                 helpers.imageFillTriangle(dest, sx(zoom), sy(zoom, true), sx(zoom), sy(zoom), sx(zoom, true), sy(zoom, true), col)
             }
