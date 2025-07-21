@@ -1,7 +1,7 @@
 {
-    "name": "arcade-brohann-3d",
+    "name": "arcade-brohann-polymesh",
     "version": "0.5.2",
-    "description": "",
+    "description": "basic 3d render like polygon and mesh (from phattisu)",
     "dependencies": {
         "device": "*"
     },
