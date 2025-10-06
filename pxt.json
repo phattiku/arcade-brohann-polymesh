@@ -1,25 +1,33 @@
 {
-    "name": "arcade-brohann-polymesh",
-    "version": "0.5.2",
-    "description": "basic 3d render like polygon and mesh (from phattisu)",
+    "name": "arcade-polymesh",
+    "version": "2.2.2",
+    "description": "basic 3d render like polygon and mesh",
     "dependencies": {
         "device": "*"
     },
     "files": [
+        "main.blocks",
         "main.ts",
         "README.md",
-        "assets.json"
+        "assets.json",
+        "help.ts",
+        "sorting.ts",
+        "me.ts",
+        "myself.ts",
+        "module.ts",
+        "class.ts",
+        "enum.ts",
+        "shadow.ts"
     ],
     "testFiles": [
         "test.ts"
     ],
     "targetVersions": {
-        "target": "1.12.46",
+        "target": "2.0.59",
         "targetId": "arcade"
     },
     "supportedTargets": [
         "arcade"
     ],
-    "preferredEditor": "tsprj",
-    "languageRestriction": "javascript-only"
+    "preferredEditor": "tsprj"
 }
